@@ -1,4 +1,7 @@
 #### Kernal ####
+# 这里面的一些简单函数，涉及for循环的尽量都用apply函数替代
+# 能矢量运算的就不要用循环算
+
 K <- function(x){
   if(abs(x)<=1){
     k <- 3/4*(1-x^2)
@@ -108,16 +111,18 @@ g.d <- function(X,b,u,h){
   return(result)
 }
 
-L <- function(b,y,X){
+L <- function(b,y,X){ # 这是参与优化的目标函数，一定要尽量写得高效
   b <- as.matrix(b)
   b <- b/sqrt(sum(b^2))
   if(b[1,1]<0){b[1,1] <- -b[1,1]}
   n <- ncol(X)
   res <- 0
   h <- 0.2*(max(t(X) %*% b)-min(t(X) %*% b))
-  for(j in 1:(n-1)){
+  for(j in 1:(n-1)){ # 这部分for循环效率太低了，想办法用apply函数代替for循环
+
+    z <- t(X[,j]%*%b) # z与i无关的话就拉外面来，
     for(i in 2:n){
-       z <- t(X[,j]%*%b)
+
        p1 <- g(X,b,z,h)+g.d(X,b,z,h)*t(X[,i-1]-X[,j])%*%b
        p2 <- sum(a(X,b,z,h)%*%X[,i])+sum(a.d(X,b,z,h)%*%(t(X[,i-1]-X[,j])%*%b)%*%X[,i])
        res <- res + sqrt((y[i]-p1-p2)^2)*K(t(X[,i-1]-X[,j])%*%b/h)

@@ -20,10 +20,10 @@ yt<-function(n){
       y[i-1] = g1 + a1*x1[i] + a2*x2[i] + a3*x3[i]+ a4*x4[i] + error[i]
     }
 
-    x1t = x1[2:40]
-    x2t = x1[2:40]
-    x3t = x1[2:40]
-    x4t = x1[2:40]
+    x1t = x1[2:n]
+    x2t = x1[2:n]
+    x3t = x1[2:n]
+    x4t = x1[2:n]
     data <-data.frame(y, x1t,x2t,x3t,x4t)
 
     return(data)
